@@ -14,7 +14,15 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
-    my_models = ["BaseModel", "User", "Place", "State", "City", "Amenity", "Review"]
+    my_models = [
+        "BaseModel",
+        "User",
+        "Place",
+        "State",
+        "City",
+        "Amenity",
+        "Review"
+    ]
 
     def do_quit(self, args):
         """Exits the console."""
@@ -30,7 +38,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """
-        Creates a new instance of a given class, saves it to file, and prints its ID.
+        Creates a new instance of a given class
         Syntax: create <ClassName>
         """
         if args == "":
@@ -44,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, args):
         """
-        Prints the string representation of an instance based on its class name and ID.
+        Prints the string representation of an instance
         Syntax: show <ClassName> <id>
         """
         sw = 0
@@ -66,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         """
-        Deletes an instance based on its class name and ID, then saves the change to file.
+        Deletes an instance based on its class name and ID
         Syntax: destroy <ClassName> <id>
         """
         sw = 0
@@ -102,7 +110,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """
-        Prints all instances of a class, or if no class is specified, all instances.
+        Prints all instances of a class
         Syntax: all <ClassName>
         """
         arg = args.split()
@@ -121,8 +129,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, args):
         """
-        Updates an instance by adding or updating an attribute and saves the change to file.
-        Syntax: update <ClassName> <id> <attribute_name> "<attribute_value>"
+        Updates an instance by adding or updating
         """
         arg = args.split()
         sw = 0
