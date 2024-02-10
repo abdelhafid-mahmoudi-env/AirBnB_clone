@@ -8,7 +8,7 @@ import ast
 
 
 def parse_arguments(argument_line: str):
-    """Parse command arguments to handle different types of inputs including JSON."""
+    """Parse command arguments to handle different."""
     curly_braces_match = re.search(r"\{(.*?)\}", argument_line)
     brackets_match = re.search(r"\[(.*?)\]", argument_line)
 
@@ -52,18 +52,19 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def default(self, line: str):
-        """Handle unrecognized commands and custom syntax, including dot notation."""
-        # Check if the command uses the dot notation for classes (e.g., User.update(...))
+        """Handle unrecognized commands and custom syntax."""
+        # Check if the command uses the dot notation for classes
         dot_notation_match = re.match(r"(\w+)\.(\w+)\((.*)\)$", line)
         if dot_notation_match:
             class_name, method_name, arguments = dot_notation_match.groups()
-            if class_name in self.supported_classes and hasattr(self, f"do_{method_name}"):
+            check_method = hasattr(self, f"do_{method_name}")
+            if class_name in self.supported_classes and check_method:
                 # Prepare arguments, handling dictionaries specially
                 if arguments.startswith("{"):
                     try:
                         # Safely evaluate dictionary arguments
                         arguments_dict = ast.literal_eval(arguments)
-                        # Convert the dictionary back to a string for passing to the command method
+                        # Convert the dictionary back to a string
                         arguments = f'"{class_name}" {str(arguments_dict)}'
                     except ValueError as e:
                         print(f"Error parsing dictionary: {e}")
@@ -138,7 +139,8 @@ class HBNBCommand(cmd.Cmd):
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects."""
         arg_list = parse_arguments(arg)
-        if len(arg_list) > 0 and arg_list[0] not in HBNBCommand.supported_classes:
+        in_list = arg_list[0] not in HBNBCommand.supported_classes
+        if len(arg_list) > 0 and in_list:
             print("** class doesn't exist **")
         else:
             obj_list = []
@@ -187,7 +189,13 @@ class HBNBCommand(cmd.Cmd):
     def _validate_update_args(self, args):
         """Validate the arguments passed to the update command."""
         if len(args) < 2:
-            print("** class name missing **" if len(args) == 0 else "** instance id missing **")
+            """Validate the arguments passed."""
+            if len(args) == 0:
+                print("** class name missing **")
+            elif len(args) == 1:
+                print("** instance id missing **")
+            else:
+                return True
             return False
         if args[0] not in self.supported_classes:
             print("** class doesn't exist **")
