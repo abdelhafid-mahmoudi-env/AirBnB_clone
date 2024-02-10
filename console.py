@@ -7,6 +7,7 @@ import cmd
 from models import storage
 from models.base_model import BaseModel
 
+
 class HBNBCommand(cmd.Cmd):
     """
     This class defines the command interpreter for the HBNB console.
