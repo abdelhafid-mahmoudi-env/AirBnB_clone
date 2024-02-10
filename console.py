@@ -100,7 +100,8 @@ class HBNBCommand(cmd.Cmd):
         elif args[0] not in {'BaseModel'}:
             print("** class doesn't exist **")
         else:
-            print([str(objs[obj]) for obj in objs if obj.startswith(args[0] + '.')])
+            prefix = args[0] + '.'
+            print([str(objs[obj]) for obj in objs if obj.startswith(prefix)])
 
     def do_update(self, arg):
         """
