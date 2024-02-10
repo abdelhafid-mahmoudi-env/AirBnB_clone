@@ -28,10 +28,7 @@ class FileStorage:
 
     def save(self) -> None:
         """Saves all objects to the JSON file."""
-        obj_dict = {
-            obj_id: obj.to_dict()
-            for obj_id, obj in self.__objects.items()
-        }
+        obj_dict = {obj_id: obj.to_dict() for obj_id, obj in self.__objects.items()}
         with open(self.__file_path, 'w') as f:
             json.dump(obj_dict, f)
 
