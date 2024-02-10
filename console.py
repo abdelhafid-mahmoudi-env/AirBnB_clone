@@ -22,6 +22,16 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
+    
+    def default(self, line):
+        """Attempt to match the entered command to a method and execute it."""
+        command, *args = line.split()
+        arg = ' '.join(args)
+        try:
+            # Dynamically call the method based on command
+            getattr(self, command)(arg)
+        except AttributeError:
+            print("*** Unknown command: {}".format(command))
 
     def do_quit(self, arg):
         """
