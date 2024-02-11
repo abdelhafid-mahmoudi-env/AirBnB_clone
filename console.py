@@ -117,11 +117,11 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        if args[0] not in self.class_list:
-            print("** class doesn't exist **")
-            return
         if len(args) == 1:
             print("** instance id missing **")
+            return  # Added to handle missing instance id
+        if args[0] not in self.class_list:
+            print("** class doesn't exist **")
             return
         all_objs = storage.all()
         key = args[0] + '.' + args[1]
