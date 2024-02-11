@@ -2,12 +2,7 @@
 
 from uuid import uuid4
 from datetime import datetime
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
+
 
 class BaseModel:
     """Defines all common attributes/methods for other classes."""
