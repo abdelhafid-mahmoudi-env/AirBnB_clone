@@ -10,7 +10,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from datetime import datetime
 
 
 class HBNBCommand(cmd.Cmd):
@@ -34,14 +33,8 @@ class HBNBCommand(cmd.Cmd):
         """Handle unrecognized commands."""
         parts = line.split('.')
         if len(parts) == 2:
-            if parts[0] not in self.class_list:
-                print("** class doesn't exist **")
-                return
-            elif parts[1] == "all()":
+            if parts[1] == "all()":
                 self.do_all(parts[0])
-                return
-            elif parts[1] == "update()":
-                print("** instance id missing **")
                 return
             elif parts[1] == "count()":
                 self.do_count(parts[0])
