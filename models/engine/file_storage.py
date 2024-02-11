@@ -1,7 +1,6 @@
 #!/usr/bin/python3
-
-import json
 """file serialization-deserialization"""
+
 import json
 from models.base_model import BaseModel
 from models.user import User
@@ -37,7 +36,7 @@ class FileStorage:
     def reload(self):
         """Deserializes the JSON file to __objects, if it exists."""
         try:
-            with open(self.__file_path, 'r') as f:
+            with open(self.__file_path, 'r', encoding="UTF-8") as f:
                 obj_dict = json.load(f)
                 for obj_id, obj_attrs in obj_dict.items():
                     cls_name = obj_attrs["__class__"]
