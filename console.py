@@ -64,6 +64,10 @@ class HBNBCommand(cmd.Cmd):
                         raise TypeError
                 except Exception as e:
                     print("** invalid dictionary representation **")
+                    return
+            else:
+                print("** instance id missing **")
+                return
         else:
             cmd.Cmd.default(self, line)
 
