@@ -20,5 +20,4 @@ To use the console, clone this repository to your local machine:
 - Amine El Orche <amineelorche@gmail.com>
 
 ## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+See the LICENSE file for details.
