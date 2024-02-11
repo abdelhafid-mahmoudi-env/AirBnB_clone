@@ -28,7 +28,7 @@ class BaseModel:
                 self.id,
                 self.__dict__
             )
-    
+
     def __repr__(self):
         """
         returns string repr
