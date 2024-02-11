@@ -4,6 +4,7 @@ BaseModel that defines all common attributes/methods for other classes
 """
 import uuid
 from datetime import datetime
+from models import register_class
 
 
 class BaseModel:
@@ -46,3 +47,6 @@ class BaseModel:
         my_dict['created_at'] = my_dict['created_at'].isoformat()
         my_dict['updated_at'] = my_dict['updated_at'].isoformat()
         return my_dict
+
+# Enregistrez la classe BaseModel une fois définie
+register_class(BaseModel)
