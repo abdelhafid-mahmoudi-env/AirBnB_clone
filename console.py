@@ -66,7 +66,7 @@ class HBNBCommand(cmd.Cmd):
                     print("** invalid dictionary representation **")
                     return
             else:
-                print("** instance id missing **")
+                print("** class doesn't exist **")
                 return
         else:
             cmd.Cmd.default(self, line)
