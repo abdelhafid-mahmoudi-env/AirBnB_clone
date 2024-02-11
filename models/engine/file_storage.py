@@ -4,6 +4,22 @@ Defines class FileStorage
 """
 import json
 from models.base_model import BaseModel
+from models import class_registry
+
+
+def reload(self):
+    """Deserializes the JSON file to __objects"""
+    try:
+        with open(self.__file_path, 'r') as f:
+            obj_dict = json.load(f)
+        for obj in obj_dict.values():
+            class_name = obj['__class__']
+            del obj['__class__']
+            cls = class_registry.get(class_name)
+            if cls:
+                self.new(cls(**obj))
+    except FileNotFoundError:
+        pass
 
 class FileStorage:
     """Serializes instances to a JSON file
@@ -35,6 +51,8 @@ class FileStorage:
             for obj in obj_dict.values():
                 class_name = obj['__class__']
                 del obj['__class__']
-                self.new(eval(class_name)(**obj))
+                cls = class_registry.get(class_name)
+                if cls:
+                    self.new(cls(**obj))
         except FileNotFoundError:
             pass
