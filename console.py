@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import cmd
 import re
 from models import storage
@@ -10,6 +11,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from datetime import datetime
+
 
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
@@ -23,36 +25,44 @@ class HBNBCommand(cmd.Cmd):
         'Review': Review,
     }
 
+    SHOW = r'^(\w+)\.show\("([^"]+)"\)$'
+    DESTROY = r'^(\w+)\.destroy\("([^"]+)"\)$'
+    UPDATE_ATTR = r'^(\w+)\.update\("([^"]+)", "([^"]+)", ("[^"]+"|\d+)\)$'
+    UPDATE_DICT = r'^(\w+)\.update\("([^"]+)", (\{.*\})\)$'
+
     def default(self, line):
-        """Handle unrecognized commands and custom syntax like <class name>.count()."""
+        """Handle unrecognized commands."""
         parts = line.split('.')
         if len(parts) == 2:
             if parts[1] == "all()":
                 self.do_all(parts[0])
             elif parts[1] == "count()":
                 self.do_count(parts[0])
-            elif re.match(r'^(\w+)\.show\("([^"]+)"\)$', line):
-                match = re.match(r'^(\w+)\.show\("([^"]+)"\)$', line)
+            elif re.match(HBNBCommand.SHOW, line):
+                match = re.match(HBNBCommand.SHOW, line)
                 self.do_show(f"{match.group(1)} {match.group(2)}")
-            elif re.match(r'^(\w+)\.destroy\("([^"]+)"\)$', line):
-                match = re.match(r'^(\w+)\.destroy\("([^"]+)"\)$', line)
+            elif re.match(HBNBCommand.DESTROY, line):
+                match = re.match(HBNBCommand.DESTROY, line)
                 self.do_destroy(f"{match.group(1)} {match.group(2)}")
-            elif re.match(r'^(\w+)\.update\("([^"]+)", "([^"]+)", ("[^"]+"|\d+)\)$', line):
-                match = re.match(r'^(\w+)\.update\("([^"]+)", "([^"]+)", ("[^"]+"|\d+)\)$', line)
+            elif re.match(HBNBCommand.UPDATE_ATTR, line):
+                match = re.match(HBNBCommand.UPDATE_ATTR, line)
                 class_name, obj_id, attr_name, attr_val = match.groups()
                 self.do_update(f'{class_name} {obj_id} {attr_name} {attr_val}')
-            elif re.match(r'^(\w+)\.update\("([^"]+)", (\{.*\})\)$', line):
-                match = re.match(r'^(\w+)\.update\("([^"]+)", (\{.*\})\)$', line)
+            elif re.match(HBNBCommand.UPDATE_DICT, line):
+                match = re.match(HBNBCommand.UPDATE_DICT, line)
                 class_name, obj_id, dict_str = match.groups()
                 try:
                     attr_dict = eval(dict_str)
                     if isinstance(attr_dict, dict):
                         for attr_name, attr_val in attr_dict.items():
-                            update_cmd = f'{class_name} {obj_id} {attr_name} "{attr_val}"'
-                            self.do_update(update_cmd)
+                            cmd = (
+                                f'{class_name} {obj_id} '
+                                f'{attr_name} "{attr_val}"'
+                            )
+                            self.do_update(cmd)
                     else:
                         raise TypeError
-                except:
+                except Exception as e:
                     print("** invalid dictionary representation **")
         else:
             cmd.Cmd.default(self, line)
@@ -82,7 +92,7 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Creates a new instance of BaseModel, saves it (to the JSON file) and prints the id."""
+        """Creates a new instance of BaseModel."""
         if not arg:
             print("** class name missing **")
             return
@@ -94,7 +104,7 @@ class HBNBCommand(cmd.Cmd):
         print(instance.id)
 
     def do_show(self, arg):
-        """Prints the string representation of an instance based on the class name and id."""
+        """Prints the string representation."""
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
@@ -133,18 +143,22 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not on the class name."""
+        """Prints all string representation of all instances."""
         all_objs = storage.all()
         if arg:
             if arg not in self.class_list:
                 print("** class doesn't exist **")
                 return
-            print([str(obj) for key, obj in all_objs.items() if type(obj).__name__ == arg])
+            print([
+                str(obj)
+                for key, obj in all_objs.items()
+                if type(obj).__name__ == arg
+            ])
         else:
             print([str(obj) for obj in all_objs.values()])
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id by adding or updating attribute."""
+        """Updates an instance based on the class name and id."""
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
@@ -166,7 +180,6 @@ class HBNBCommand(cmd.Cmd):
         if key not in all_objs:
             print("** no instance found **")
             return
-        
         obj = all_objs[key]
         attr_name = args[2]
         attr_val = args[3].strip('"')
@@ -176,10 +189,10 @@ class HBNBCommand(cmd.Cmd):
             try:
                 attr_val = float(attr_val)
             except ValueError:
-                pass  # Leave it as a string if it cannot be converted to a number
-
+                pass
         setattr(obj, attr_name, attr_val)
         obj.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()

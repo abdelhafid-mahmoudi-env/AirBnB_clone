@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import json
 from models.base_model import BaseModel
 from models.user import User
@@ -10,7 +11,7 @@ from models.review import Review
 
 
 class FileStorage:
-    """Serializes instances to a JSON file and deserializes JSON file to instances."""
+    """Serializes instances to a JSON file and deserializes JSON."""
     __file_path = 'file.json'
     __objects = {}
 
@@ -25,7 +26,10 @@ class FileStorage:
 
     def save(self):
         """Serializes __objects to the JSON file (path: __file_path)."""
-        obj_dict = {obj: self.__objects[obj].to_dict() for obj in self.__objects.keys()}
+        obj_dict = {
+            obj: self.__objects[obj].to_dict()
+            for obj in self.__objects.keys()
+        }
         with open(self.__file_path, 'w') as f:
             json.dump(obj_dict, f)
 
