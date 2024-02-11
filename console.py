@@ -102,6 +102,10 @@ class HBNBCommand(cmd.Cmd):
         print()
         return True
 
+    def do_help(self, arg):
+        """List available commands with "help"."""
+        super().do_help(arg)
+
     def help_EOF(self):
         """Help when EOF is entered
         """
@@ -119,9 +123,12 @@ class HBNBCommand(cmd.Cmd):
         if arg not in self.class_list:
             print("** class doesn't exist **")
             return
-        instance = self.class_list[arg]()
-        instance.save()
-        print(instance.id)
+        try:
+            instance = self.class_list[arg]()
+            instance.save()
+            print(instance.id)
+        except NameError:
+            print("** class doesn't exist **")
 
     def help_create(self):
         """shows what create does
