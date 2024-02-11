@@ -1,15 +1,15 @@
-''' Ce module définit des tests pour l'aménité '''
+''' Ce module définit des tests pour l'État '''
 
 import unittest
 import os
 import json
 from models.engine.file_storage import FileStorage
-from models.amenity import Amenity
+from models.state import State
 
 
-class TestAmenity(unittest.TestCase):
+class TestState(unittest.TestCase):
     '''
-    Cette classe effectue des tests sur l'aménité
+    Cette classe effectue des tests sur l'état
     '''
 
     def setUp(self):
@@ -17,9 +17,9 @@ class TestAmenity(unittest.TestCase):
         Cette méthode configure toutes les instances nécessaires pour les tests
         '''
         self.storage = FileStorage()
-        self.amenity = Amenity()
-        self.amenity.name = "TestAmenity"
-        self.storage.new(self.amenity)
+        self.state = State()
+        self.state.name = "TestState"
+        self.storage.new(self.state)
         self.storage.save()
 
     def tearDown(self):
@@ -29,13 +29,13 @@ class TestAmenity(unittest.TestCase):
         if os.path.exists(FileStorage._FileStorage__file_path):
             os.remove(FileStorage._FileStorage__file_path)
 
-    def test_amenity_instance(self):
-        ''' Ce test vérifie l'instance de l'aménité '''
-        self.assertIsInstance(self.amenity, Amenity)
+    def test_state_instance(self):
+        ''' Ce test vérifie l'instance de l'état '''
+        self.assertIsInstance(self.state, State)
 
-    def test_amenity_name(self):
-        ''' Ce test vérifie le nom de l'aménité '''
-        self.assertEqual(self.amenity.name, "TestAmenity")
+    def test_state_name(self):
+        ''' Ce test vérifie le nom de l'état '''
+        self.assertEqual(self.state.name, "TestState")
 
 
 if __name__ == '__main__':
