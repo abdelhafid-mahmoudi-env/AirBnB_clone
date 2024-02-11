@@ -211,6 +211,9 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 3 or not args[2]:
             print("** attribute name missing **")
             return
+        if args[2] in ['id', 'created_at', 'updated_at']:
+            print("** cannot update id, created_at, or updated_at **")
+            return
         if len(args) < 4 or not args[3]:
             print("** value missing **")
             return
