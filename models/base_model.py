@@ -15,20 +15,20 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """
         Initializes a new instance of the BaseModel class.
+        If kwargs is not empty, initializes with key-value pairs in kwargs,
+        converting datetime strings to datetime objects for created_at and
+        updated_at. Otherwise, initializes with a new UUID and the current
+        datetime for created_at and updated_at.
         """
-        if not kwargs:
-            self.id = str(uuid4())
-            self.created_at = self.updated_at = datetime.now()
-        else:
+        if kwargs:
             for key, value in kwargs.items():
-                if key in ['created_at', 'updated_at']:
+                if key == 'created_at' or key == 'updated_at':
                     value = datetime.fromisoformat(value)
                 if key != '__class__':
                     setattr(self, key, value)
-            self.id = kwargs.get('id', str(uuid4()))
-            now = datetime.now()
-            self.created_at = kwargs.get('created_at', now)
-            self.updated_at = kwargs.get('updated_at', now)
+        else:
+            self.id = str(uuid4())
+            self.created_at = self.updated_at = datetime.now()
 
     def __str__(self):
         """
