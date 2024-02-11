@@ -34,20 +34,31 @@ class HBNBCommand(cmd.Cmd):
         """Handle unrecognized commands."""
         parts = line.split('.')
         if len(parts) == 2:
-            if parts[1] == "all()":
+            if parts[0] not in self.class_list:
+                print("** class doesn't exist **")
+                return
+            elif parts[1] == "all()":
                 self.do_all(parts[0])
+                return
+            elif parts[1] == "update()":
+                print("** instance id missing **")
+                return
             elif parts[1] == "count()":
                 self.do_count(parts[0])
+                return
             elif re.match(HBNBCommand.SHOW, line):
                 match = re.match(HBNBCommand.SHOW, line)
                 self.do_show(f"{match.group(1)} {match.group(2)}")
+                return
             elif re.match(HBNBCommand.DESTROY, line):
                 match = re.match(HBNBCommand.DESTROY, line)
                 self.do_destroy(f"{match.group(1)} {match.group(2)}")
+                return
             elif re.match(HBNBCommand.UPDATE_ATTR, line):
                 match = re.match(HBNBCommand.UPDATE_ATTR, line)
                 class_name, obj_id, attr_name, attr_val = match.groups()
                 self.do_update(f'{class_name} {obj_id} {attr_name} {attr_val}')
+                return
             elif re.match(HBNBCommand.UPDATE_DICT, line):
                 match = re.match(HBNBCommand.UPDATE_DICT, line)
                 class_name, obj_id, dict_str = match.groups()
@@ -65,11 +76,13 @@ class HBNBCommand(cmd.Cmd):
                 except Exception as e:
                     print("** invalid dictionary representation **")
                     return
+                return
             else:
                 print("** class doesn't exist **")
                 return
         else:
             cmd.Cmd.default(self, line)
+            return
 
     def do_count(self, class_name):
         """Counts the number of instances of a class."""
