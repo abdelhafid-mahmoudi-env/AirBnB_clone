@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-''' Ce module définit des tests pour le stockage de fichiers '''
+"""Ce module définit des tests pour le stockage de fichiers"""
 
 import unittest
 import os
@@ -9,15 +9,15 @@ from models.base_model import BaseModel
 
 
 class TestFileStorage(unittest.TestCase):
-    '''
+    """
     Cette classe effectue des tests sur le stockage
     des fichiers de ce projet
-    '''
+    """
 
     def setUp(self):
-        '''
+        """
         Cette méthode configure toutes les instances nécessaires pour les tests
-        '''
+        """
         self.storage = FileStorage()
         self.base_model = BaseModel()
         self.base_model_dict = self.base_model.to_dict()
@@ -25,21 +25,21 @@ class TestFileStorage(unittest.TestCase):
         self.storage.save()
 
     def tearDown(self):
-        '''
+        """
         Cette méthode supprime le fichier json qui a été ouvert pour les tests
-        '''
+        """
         if os.path.exists(FileStorage._FileStorage__file_path):
             os.remove(FileStorage._FileStorage__file_path)
 
     def test_json_file_exist(self):
-        ''' Ce test vérifie l'existence du fichier json
-        lors de la création d'une instance de la classe FileStorage'''
+        """Ce test vérifie l'existence du fichier json
+        lors de la création d'une instance de la classe FileStorage"""
         self.assertTrue(os.path.exists(FileStorage._FileStorage__file_path))
 
     def test_all(self):
-        ''' Test de la fonction "all" de la classe de stockage pour s'assurer
+        """Test de la fonction "all" de la classe de stockage pour s'assurer
         que la représentation du dictionnaire de l'instance de classe est stockée
-        dans __objects'''
+        dans __objects"""
         objects = self.storage.all()
         key = self.base_model.__class__.__name__ + "." + self.base_model.id
         self.assertTrue(isinstance(objects, dict))
@@ -47,7 +47,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertIn(key, objects)
 
     def test_new(self):
-        ''' Test pour la nouvelle méthode '''
+        """Test pour la nouvelle méthode"""
         new_model = BaseModel()
         self.storage.new(new_model)
         objects = self.storage.all()
@@ -56,7 +56,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertTrue(isinstance(objects[key], BaseModel))
 
     def test_save_reload(self):
-        '''Test pour les méthodes save et reload'''
+        """Test pour les méthodes save et reload"""
         self.storage.save()
         objects_before_reload = self.storage.all()
         self.storage.reload()
@@ -64,7 +64,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(objects_before_reload, objects_after_reload)
 
     def test_json_file_content(self):
-        '''Tests pour le contenu du fichier json'''
+        """Tests pour le contenu du fichier json"""
         with open(FileStorage._FileStorage__file_path, 'r') as f:
             file_content = f.read()
             file_data = json.loads(file_content)
