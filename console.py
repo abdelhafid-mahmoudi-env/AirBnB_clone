@@ -25,7 +25,7 @@ class HBNBCommand(cmd.Cmd):
         'Review': Review,
     }
 
-    SHOW = r'^(\w+)\.show\("([^"]+)"\)$'
+    SHOW = r'^(\w+)\.show(\("([^"]+)"\))?$'
     DESTROY = r'^(\w+)\.destroy\("([^"]+)"\)$'
     UPDATE_ATTR = r'^(\w+)\.update\("([^"]+)", "([^"]+)", ("[^"]+"|\d+)\)$'
     UPDATE_DICT = r'^(\w+)\.update\("([^"]+)", (\{.*\})\)$'
