@@ -28,6 +28,12 @@ class BaseModel:
                 self.id,
                 self.__dict__
             )
+    
+    def __repr__(self):
+        """
+        returns string repr
+        """
+        return (self.__str__())
 
     def save(self):
         """Updates 'updated_at' with the current datetime."""
