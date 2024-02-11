@@ -2,6 +2,7 @@
 
 from uuid import uuid4
 from datetime import datetime
+from models import storage
 
 
 class BaseModel:
@@ -11,14 +12,14 @@ class BaseModel:
         """Initializes a new instance of BaseModel."""
         if kwargs:
             for key, value in kwargs.items():
-                if key != '__class__':
-                    if key in ('created_at', 'updated_at'):
-                        value = datetime.fromisoformat(value)
-                    setattr(self, key, value)
+                if key != "__class__":
+                    if key not in ('created_at', 'updated_at'):
+                        setattr(self, key, value)
+                    else:
+                        setattr(self, key, datetime.fromisoformat(value))
         else:
             self.id = str(uuid4())
             self.created_at = self.updated_at = datetime.now()
-            from models import storage
             storage.new(self)
 
     def __str__(self):
@@ -32,15 +33,13 @@ class BaseModel:
     def save(self):
         """Updates 'updated_at' with the current datetime."""
         self.updated_at = datetime.now()
-        from models import storage
         storage.save()
 
     def to_dict(self):
         """Returns a dictionary containing all keys/values."""
-        my_dict = {
-            key: value.isoformat()
-            if isinstance(value, datetime)
-            else value for key, value in self.__dict__.items()
-        }
-        my_dict['__class__'] = self.__class__.__name__
-        return my_dict
+        temp_dict = {}
+        for key, value in self.__dict__.items():
+            temp_dict[key] = value if key not in ["created_at", "updated_at"]\
+                else self.__getattribute__(key).isoformat()
+        temp_dict['__class__'] = type(self).__name__
+        return temp_dict
