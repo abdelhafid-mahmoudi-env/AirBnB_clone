@@ -10,6 +10,26 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+import shlex
+
+
+def is_int(value):
+    """check if int"""
+    try:
+        int_value = int(value)
+        return True
+    except ValueError:
+        return False
+
+
+def is_float(value):
+    """check if number is float
+    """
+    try:
+        float_value = float(value)
+        return True
+    except ValueError:
+        return False
 
 
 class HBNBCommand(cmd.Cmd):
@@ -168,34 +188,43 @@ class HBNBCommand(cmd.Cmd):
             print([str(obj) for obj in all_objs.values()])
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id."""
+        """Updates an instance based on the class name and id
+        by adding or updating attribute
+        """
         args = arg.split()
-        if len(args) == 0:
+        if not args or not args[0]:
             print("** class name missing **")
             return
-        if args[0] not in self.class_list:
+        class_name = args[0]
+        if class_name not in self.class_list.keys():
             print("** class doesn't exist **")
             return
-        if len(args) == 1:
+        if len(args) < 2 or not args[1]:
             print("** instance id missing **")
             return
-        all_objs = storage.all()
-        key = args[0] + '.' + args[1]
-        if key not in all_objs:
+        id = args[1]
+        all_objects = storage.all()
+        key = f"{class_name}.{id}"
+        if key not in all_objects.keys():
             print("** no instance found **")
             return
-        obj = all_objs[key]
-        attr_name = args[2]
-        attr_val = args[3].strip('"')
-        if attr_val.isdigit():
-            attr_val = int(attr_val)
+        if len(args) < 3 or not args[2]:
+            print("** attribute name missing **")
+            return
+        if len(args) < 4 or not args[3]:
+            print("** value missing **")
+            return
+        value = args[3]
+        if value[0] == '"':
+            value = value[1:-1]
+        if is_int(value):
+            casted_arg = int(value)
+        elif is_float(value):
+            casted_arg = float(value)
         else:
-            try:
-                attr_val = float(attr_val)
-            except ValueError:
-                pass
-        setattr(obj, attr_name, attr_val)
-        obj.save()
+            casted_arg = str(value)
+        setattr(all_objects[key], args[2], casted_arg)
+        storage.save()
 
 
 if __name__ == '__main__':
