@@ -29,6 +29,7 @@ class BaseModel:
         else:
             self.id = str(uuid4())
             self.created_at = self.updated_at = datetime.now()
+            storage.new(self)
 
     def __str__(self):
         """
@@ -38,10 +39,10 @@ class BaseModel:
         return f"[{cls_name}] ({self.id}) {self.__dict__}"
 
     def save(self):
-        """
-        Updates 'updated_at' with the current datetime.
-        """
+        """Updates 'updated_at' with the current datetime and saves to file."""
         self.updated_at = datetime.now()
+        storage.new(self)
+        storage.save()
 
     def to_dict(self):
         """
