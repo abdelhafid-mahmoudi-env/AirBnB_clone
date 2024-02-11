@@ -240,15 +240,15 @@ class HBNBCommand(cmd.Cmd):
         float_value = False
         try:
             float_value = float(value)
-            float_value =  True
+            float_value = True
         except ValueError:
-            float_value =  False
+            float_value = False
         int_value = False
         try:
             int_value = int(value)
-            int_value =  True
+            int_value = True
         except ValueError:
-            int_value =  False
+            int_value = False
         if int_value:
             casted_arg = int(value)
         elif float_value:
