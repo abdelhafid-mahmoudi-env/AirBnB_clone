@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""BaseModel module: Defines all common"""
 
 import uuid
 from datetime import datetime
@@ -9,16 +10,17 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Initializes a new instance of BaseModel."""
+        from models import storage
         if kwargs:
             for key, value in kwargs.items():
                 if key != '__class__':
                     if key in ('created_at', 'updated_at'):
                         value = datetime.fromisoformat(value)
                     setattr(self, key, value)
+            storage.new(self)
         else:
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.now()
-            from models import storage
             storage.new(self)
 
     def __str__(self):
