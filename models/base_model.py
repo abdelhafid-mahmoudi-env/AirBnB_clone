@@ -1,55 +1,50 @@
-#!/usr/bin/python3
-"""This file contain the parent class BaseModel"""
+#!/usr/bin/env python3
+"""
+Defines the BaseModel class that serves as a base for all other classes
+in the AirBnB clone project.
+"""
 
 import uuid
 from datetime import datetime
-import models
 
 
 class BaseModel:
-    """BaseModel class"""
+    """
+    Defines all common attributes/methods for other classes.
+    """
+
     def __init__(self, *args, **kwargs):
         """
-        __init__ constructor method of the class
+        Initializes a new BaseModel instance.
         """
-        if kwargs != {}:
-            for key, value in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    val = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-                    setattr(self, key, val)
-                    continue
-                if key != "__class__":
-                    setattr(self, key, value)
-        else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            models.storage.new(self)
+        self.id = str(uuid.uuid4())
+        self.created_at = self.updated_at = datetime.now()
+        for key, value in kwargs.items():
+            if key == '__class__':
+                continue
+            if key in ['created_at', 'updated_at']:
+                value = datetime.fromisoformat(value)
+            setattr(self, key, value)
 
     def __str__(self):
-        """__str__ method that returns string representation of the instance
-        Returns:
-        [str]: instance of BaseModel string representation"""
-        st = "[{:s}] ({:s}) {}"
-        return st.format(type(self).__name__, self.id, self.__dict__)
+        """
+        Returns a string representation of the BaseModel instance.
+        """
+        return "[{}] ({}) {}".format(
+            self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
         """
-        save method that saves instance information in JSON file
+        Updates the public instance attribute 'updated_at' with the current datetime.
         """
         self.updated_at = datetime.now()
-        models.storage.save()
 
     def to_dict(self):
         """
-        to_dict method that return dictionary representation of the instance
-
-        Returns:
-            [dict]: dictionary with information about the BaseModel instance
+        Returns a dictionary containing all keys/values of the instance.
         """
-        new = dict(self.__dict__)
-        new["__class__"] = type(self).__name__
-        new["created_at"] = new["created_at"].isoformat()
-        new["updated_at"] = new["updated_at"].isoformat()
-
-        return new
+        dictionary = dict(self.__dict__)
+        dictionary['__class__'] = self.__class__.__name__
+        dictionary['created_at'] = self.created_at.isoformat()
+        dictionary['updated_at'] = self.updated_at.isoformat()
+        return dictionary
