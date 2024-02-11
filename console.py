@@ -10,26 +10,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-import shlex
-
-
-def is_int(value):
-    """check if int"""
-    try:
-        int_value = int(value)
-        return True
-    except ValueError:
-        return False
-
-
-def is_float(value):
-    """check if number is float
-    """
-    try:
-        float_value = float(value)
-        return True
-    except ValueError:
-        return False
 
 
 class HBNBCommand(cmd.Cmd):
@@ -257,9 +237,21 @@ class HBNBCommand(cmd.Cmd):
         value = args[3]
         if value[0] == '"':
             value = value[1:-1]
-        if is_int(value):
+        float_value = False
+        try:
+            float_value = float(value)
+            float_value =  True
+        except ValueError:
+            float_value =  False
+        int_value = False
+        try:
+            int_value = int(value)
+            int_value =  True
+        except ValueError:
+            int_value =  False
+        if int_value:
             casted_arg = int(value)
-        elif is_float(value):
+        elif float_value:
             casted_arg = float(value)
         else:
             casted_arg = str(value)
@@ -267,8 +259,7 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def help_update(self):
-        """shows what update does
-        """
+        """shows what update does"""
         print("Update an instance based on" +
               " the class name and id by adding or updating attribute")
         print('update <class name> <id> <attribute name>' +
