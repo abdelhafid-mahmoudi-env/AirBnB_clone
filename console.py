@@ -25,9 +25,8 @@ class HBNBCommand(cmd.Cmd):
         'Review': Review,
     }
 
-    SHOW = r'^(\w+)\.show(\("([^"]+)"\))?$'
-    SHOW_WITHOUT = r'^(\w+)\.show\(\)$'
-    DESTROY = r'^(\w+)\.destroy\("([^"]+)"\)$'
+    SHOW = r'^(\w+)\.show(?:\((.*?)\))?$'
+    DESTROY = r'^(\w+)\.destroy(?:\((.*?)\))?$'
     UPDATE_ATTR = r'^(\w+)\.update\("([^"]+)", "([^"]+)", ("[^"]+"|\d+)\)$'
     UPDATE_DICT = r'^(\w+)\.update\("([^"]+)", (\{.*\})\)$'
 
@@ -42,9 +41,6 @@ class HBNBCommand(cmd.Cmd):
             elif re.match(HBNBCommand.SHOW, line):
                 match = re.match(HBNBCommand.SHOW, line)
                 self.do_show(f"{match.group(1)} {match.group(2)}")
-            elif re.match(HBNBCommand.SHOW_WITHOUT, line):
-                print("** instance id missing **")
-                return
             elif re.match(HBNBCommand.DESTROY, line):
                 match = re.match(HBNBCommand.DESTROY, line)
                 self.do_destroy(f"{match.group(1)} {match.group(2)}")
@@ -117,11 +113,11 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        if len(args) == 1:
-            print("** instance id missing **")
-            return  # Added to handle missing instance id
         if args[0] not in self.class_list:
             print("** class doesn't exist **")
+            return
+        if len(args) == 1:
+            print("** instance id missing **")
             return
         all_objs = storage.all()
         key = args[0] + '.' + args[1]
