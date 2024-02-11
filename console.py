@@ -111,11 +111,21 @@ class HBNBCommand(cmd.Cmd):
     def do_quit(self, arg):
         """Quit command to exit the program"""
         return True
+    
+    def help_quit(self):
+        """Help when quit is entered
+        """
+        print("Quit command to exit the program\n")
 
     def do_EOF(self, arg):
         """EOF command to exit the program"""
         print()
         return True
+    
+    def help_EOF(self):
+        """Help when EOF is entered
+        """
+        print("EOF command to exit the program\n")
 
     def emptyline(self):
         """Do nothing on empty input line"""
@@ -132,6 +142,12 @@ class HBNBCommand(cmd.Cmd):
         instance = self.class_list[arg]()
         instance.save()
         print(instance.id)
+
+    def help_create(self):
+        """shows what create does
+        """
+        print("creates a new instance of a class")
+        print("Usage: create <model_name>\n")
 
     def do_show(self, arg):
         """Prints the string representation."""
@@ -151,6 +167,14 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return
         print(all_objs[key])
+
+    def help_show(self):
+        """shows what show does
+        """
+        print(
+            "Prints the string representation" +
+            " of an instance based on the class name and id")
+        print("Usage: show <model_name> <id>\n")
 
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id."""
@@ -172,6 +196,12 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** no instance found **")
 
+    def help_destroy(self):
+        """shows what destroy does
+        """
+        print("Deletes an instance based on the class name and id")
+        print("Usage: destroy <model_name> <id>\n")
+
     def do_all(self, arg):
         """Prints all string representation of all instances."""
         all_objs = storage.all()
@@ -186,6 +216,13 @@ class HBNBCommand(cmd.Cmd):
             ])
         else:
             print([str(obj) for obj in all_objs.values()])
+
+    def help_all(self):
+        """shows what all does
+        """
+        print("Prints all string representation" +
+              " of all instances based or not on the class name")
+        print("Usage: all [model_name]\n")
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id
@@ -228,6 +265,14 @@ class HBNBCommand(cmd.Cmd):
             casted_arg = str(value)
         setattr(all_objects[key], args[2], casted_arg)
         storage.save()
+
+    def help_update(self):
+        """shows what update does
+        """
+        print("Update an instance based on" +
+              " the class name and id by adding or updating attribute")
+        print('update <class name> <id> <attribute name>' +
+              '"<attribute value>"\n')
 
 
 if __name__ == '__main__':
