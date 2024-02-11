@@ -1,57 +1,37 @@
 #!/usr/bin/python3
-"""
-Defines the BaseModel class that serves as a base for all other classes
-in our project.
-"""
-import uuid
+from uuid import uuid4
 from datetime import datetime
 
-
 class BaseModel:
-    """
-    The BaseModel class from which future classes will be derived.
-    """
-
+    """Defines all common attributes/methods for other classes."""
+    
     def __init__(self, *args, **kwargs):
-        """
-        Initializes a new instance of the BaseModel class.
-        """
+        """Initializes a new instance of BaseModel."""
         if kwargs:
             for key, value in kwargs.items():
-                if key in ['created_at', 'updated_at']:
-                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != '__class__':
+                    if key in ('created_at', 'updated_at'):
+                        value = datetime.fromisoformat(value)
                     setattr(self, key, value)
         else:
-            self.id = str(uuid.uuid4())
+            self.id = str(uuid4())
             self.created_at = self.updated_at = datetime.now()
             from models import storage
             storage.new(self)
 
     def __str__(self):
-        """
-        Returns a string representation of the BaseModel instance.
-        """
-        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+        """String representation of the BaseModel class."""
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """
-        Updates 'updated_at' with the current datetime, and saves the instance
-        to the file storage.
-        """
+        """Updates 'updated_at' with the current datetime and saves to file."""
         self.updated_at = datetime.now()
         from models import storage
-        storage.new(self)
         storage.save()
 
     def to_dict(self):
-        """
-        Returns a dictionary of the instance's __dict__, with objects
-        converted to appropriate representation for JSON serialization,
-        including the class name in the '__class__' key.
-        """
-        my_dict = dict(self.__dict__)
+        """Returns a dictionary containing all keys/values of the instance."""
+        my_dict = {key: value.isoformat() if isinstance(value, datetime) else value
+                   for key, value in self.__dict__.items()}
         my_dict['__class__'] = self.__class__.__name__
-        my_dict['created_at'] = self.created_at.isoformat()
-        my_dict['updated_at'] = self.updated_at.isoformat()
         return my_dict
