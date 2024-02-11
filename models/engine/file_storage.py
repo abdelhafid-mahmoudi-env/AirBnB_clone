@@ -12,48 +12,42 @@ from models.review import Review
 
 
 class FileStorage:
-    """FileStorage class with dynamic attribute retrieval."""
+    """
+    A class that serializes instances to a JSON file and
+    deserializes JSON file to instances.
+    """
+    __file_path = 'file.json'
+    __objects = {}
 
-    __file_path = "file.json"
-    __objects: Dict[str, BaseModel] = {}
+    def all(self):
+        """Returns the dictionary __objects."""
+        return FileStorage.__objects
 
-    def all(self) -> Dict[str, BaseModel]:
-        """Returns the dictionary of all objects."""
-        return self.__objects
-
-    def new(self, obj: BaseModel) -> None:
-        """Adds a new object to the storage."""
+    def new(self, obj):
+        """Sets in __objects the obj with key <obj class name>.id."""
         key = f"{obj.__class__.__name__}.{obj.id}"
         self.__objects[key] = obj
 
-    def save(self) -> None:
-        """Saves all objects to the JSON file."""
-        obj_dict = {
-            obj_id: obj.to_dict()
-            for obj_id, obj in self.__objects.items()
-        }
+    def save(self):
+        """
+        Serializes __objects to the JSON file (path: __file_path).
+        """
+        obj_dict = {obj_id: obj.to_dict() for obj_id, obj in self.__objects.items()}
         with open(self.__file_path, 'w') as f:
             json.dump(obj_dict, f)
 
-    def reload(self) -> None:
-        """Reloads objects from the JSON file, if it exists."""
-        if os.path.exists(self.__file_path):
+    def reload(self):
+        """
+        Deserializes the JSON file to __objects, if the JSON file (__file_path)
+        exists; otherwise, does nothing. No exception should be raised if the
+        file doesn’t exist.
+        """
+        try:
             with open(self.__file_path, 'r') as f:
                 obj_dict = json.load(f)
             for obj_id, obj_data in obj_dict.items():
-                cls_name = obj_data['__class__']
-                cls = self.classes().get(cls_name)
-                if cls:
-                    self.__objects[obj_id] = cls(**obj_data)
-
-    def classes(self) -> Dict[str, Type[BaseModel]]:
-        """Returns a dictionary of valid classes."""
-        return {
-            "BaseModel": BaseModel,
-            "User": User,
-            "State": State,
-            "City": City,
-            "Amenity": Amenity,
-            "Place": Place,
-            "Review": Review,
-        }
+                class_name = obj_data['__class__']
+                del obj_data['__class__']
+                self.__objects[obj_id] = eval(f"{class_name}(**obj_data)")
+        except FileNotFoundError:
+            pass
