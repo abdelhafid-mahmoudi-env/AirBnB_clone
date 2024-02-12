@@ -14,6 +14,24 @@ object, and destroying objects.
 To use the console, clone this repository to your local machine:
 `https://github.com/abdelhafid-mahmoudi-env/AirBnB_clone`
 
+## Execution
+
+Your shell should work like this in interactive mode:
+
+```python3
+$ ./console.py
+(hbnb) help
+
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit
+
+(hbnb) 
+(hbnb) 
+(hbnb) quit
+$
+```
+
 ## Authors
 
 - Abdelhafid Mahmoudi <abdelhafid.mahmoudi.env@gmail.com>
