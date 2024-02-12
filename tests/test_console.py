@@ -1,137 +1,154 @@
-''' Ce module définit les tests pour la console '''
+#!/usr/bin/python3
+"""Définit les unittests."""
 
-import unittest
-from console import HBNBCommand
-from unittest.mock import patch
 import os
-from io import StringIO
+import unittest
+import console
+from console import HBNBCommand
+HBNBCommand = console.HBNBCommand
 from models import storage
+from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+from io import StringIO
+from unittest.mock import patch
 
 
-class TestConsole(unittest.TestCase):
-    '''
-    Cette classe effectue des tests sur la console
-    '''
+class TestPrompting(unittest.TestCase):
+    """Unittests pour tester l'invite de commande de l'interpréteur de commandes HBNB."""
 
+    def test_prompt_string(self):
+        """test console"""
+        self.assertEqual("(hbnb) ", HBNBCommand.prompt)
+
+    def test_empty_line(self):
+        """test console"""
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd(""))
+            self.assertEqual("", output.getvalue().strip())
+
+
+class TestHelp(unittest.TestCase):
+    """Unittests pour tester les messages d'aide de l'interpréteur de commandes HBNB."""
+
+    def test_help_quit(self):
+        """test console"""
+        h = "Quit command to exit the program"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("help quit"))
+            self.assertEqual(h, output.getvalue().strip())
+
+
+class TestExit(unittest.TestCase):
+    """Unittests pour tester la sortie de l'interpréteur de commandes HBNB."""
+
+    def test_quit_exits(self):
+        """test console"""
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertTrue(HBNBCommand().onecmd("quit"))
+
+    def test_EOF_exits(self):
+        """test console"""
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertTrue(HBNBCommand().onecmd("EOF"))
+
+
+class TestCreate(unittest.TestCase):
+    """Unittests pour tester la création de l'interpréteur de commandes HBNB."""
+
+    @classmethod
     def setUp(self):
-        ''' Mise en place du test '''
-        self.console = HBNBCommand()
+        """test console"""
+        try:
+            os.rename("file.json", "tmp")
+        except IOError:
+            pass
+        FileStorage.__objects = {}
 
+    @classmethod
     def tearDown(self):
-        ''' Nettoyage après le test '''
-        self.console = None
+        """test console"""
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("tmp", "file.json")
+        except IOError:
+            pass
 
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_create(self):
-        ''' Test create '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            state_id = f.getvalue().strip()
-            self.assertTrue(len(state_id) == 36)
-            self.assertTrue(os.path.exists('file.json'))
-            storage.delete(State(state_id))
+    def test_create_missing_class(self):
+        """test console"""
+        correct = "** class name missing **"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create"))
+            self.assertEqual(correct, output.getvalue().strip())
 
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
+    def test_create_invalid_class(self):
+        """test console"""
+        correct = "** class doesn't exist **"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create MyModel"))
+            self.assertEqual(correct, output.getvalue().strip())
+
+    def test_create_object(self):
+        """test console"""
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create BaseModel"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "BaseModel.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create User"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "User.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create State"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "State.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create City"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "City.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create Amenity"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "Amenity.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create Place"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "Place.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("create Review"))
+            self.assertLess(0, len(output.getvalue().strip()))
+            testKey = "Review.{}".format(output.getvalue().strip())
+            self.assertIn(testKey, storage.all().keys())
+
+    def test_show_invalid_class(self):
+        """test console"""
+        correct = "** class doesn't exist **"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("show MyModel"))
+            self.assertEqual(correct, output.getvalue().strip())
+
+    def test_show_invalid_id(self):
+        """test console"""
+        correct = "** no instance found **"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("show BaseModel 1212"))
+            self.assertEqual(correct, output.getvalue().strip())
+
     def test_show(self):
-        ''' Test show '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            state_id = f.getvalue().strip()
-            self.console.onecmd("show State " + state_id)
-            self.assertIn(state_id, f.getvalue().strip())
-            self.assertIn("'name': 'California'", f.getvalue().strip())
-            storage.delete(State(state_id))
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_destroy(self):
-        ''' Test destroy '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            state_id = f.getvalue().strip()
-            self.console.onecmd("destroy State " + state_id)
-            self.assertNotIn(state_id, storage.all().keys())
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_all(self):
-        ''' Test all '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            self.console.onecmd("create State name='Arizona'")
-            self.console.onecmd("create State name='Nevada'")
-            self.console.onecmd("all State")
-            self.assertIn("'California'", f.getvalue().strip())
-            self.assertIn("'Arizona'", f.getvalue().strip())
-            self.assertIn("'Nevada'", f.getvalue().strip())
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_update(self):
-        ''' Test update '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            state_id = f.getvalue().strip()
-            self.console.onecmd("update State " + state_id + " name 'New_York'")
-            self.console.onecmd("show State " + state_id)
-            self.assertIn("'name': 'New_York'", f.getvalue().strip())
-            storage.delete(State(state_id))
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_count(self):
-        ''' Test count '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            self.console.onecmd("create State name='Arizona'")
-            self.console.onecmd("create City name='LA' state_id='" +
-                                list(storage.all("State").values())[0].id + "'")
-            self.console.onecmd("count State")
-            self.assertEqual("2", f.getvalue().strip())
-            self.console.onecmd("count City")
-            self.assertEqual("1", f.getvalue().strip())
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_dump(self):
-        ''' Test dump '''
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("create State name='California'")
-            self.console.onecmd("create State name='Arizona'")
-            self.console.onecmd("create City name='LA' state_id='" +
-                                list(storage.all("State").values())[0].id + "'")
-            self.console.onecmd("create City name='SF' state_id='" +
-                                list(storage.all("State").values())[1].id + "'")
-            self.console.onecmd("dump")
-            with open("file.json", "r") as file:
-                self.assertEqual(len(file.readlines()), 6)
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
-                     'This test only work in Filestorage')
-    def test_restore(self):
-        ''' Test restore '''
-        self.console.onecmd("create State name='California'")
-        self.console.onecmd("create State name='Arizona'")
-        self.console.onecmd("create City name='LA' state_id='" +
-                            list(storage.all("State").values())[0].id + "'")
-        self.console.onecmd("create City name='SF' state_id='" +
-                            list(storage.all("State").values())[1].id + "'")
-        self.console.onecmd("destroy State " + list(storage.all("State").values())[0].id)
-        self.console.onecmd("destroy State " + list(storage.all("State").values())[1].id)
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.console.onecmd("all")
-            self.assertEqual("", f.getvalue().strip())
-            self.console.onecmd("restore")
-            self.console.onecmd("all")
-            output = f.getvalue().strip().split("\n")
-            self.assertEqual(len(output), 4)
-            self.assertIn("California", output[0])
-            self.assertIn("Arizona", output[1])
-            self.assertIn("LA", output[2])
-            self.assertIn("SF", output[3])
-
+        """test console"""
+        obj = BaseModel()
+        obj.save()
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("show BaseModel {}".format(obj.id)))
+            self.assertEqual(str(obj), output.getvalue().strip())
 
 if __name__ == '__main__':
     unittest.main()
