@@ -5,16 +5,16 @@ import os
 import unittest
 import console
 from console import HBNBCommand
-HBNBCommand = console.HBNBCommand
 from models import storage
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 from io import StringIO
 from unittest.mock import patch
+HBNBCommand = console.HBNBCommand
 
 
 class TestPrompting(unittest.TestCase):
-    """Unittests pour tester l'invite de commande de l'interpréteur de commandes HBNB."""
+    """Unittests pour tester l'invite de commande de l'interpréteur."""
 
     def test_prompt_string(self):
         """test console"""
@@ -28,7 +28,7 @@ class TestPrompting(unittest.TestCase):
 
 
 class TestHelp(unittest.TestCase):
-    """Unittests pour tester les messages d'aide de l'interpréteur de commandes HBNB."""
+    """Unittests pour tester les messages d'aide de l'interpréteur."""
 
     def test_help_quit(self):
         """test console"""
@@ -39,7 +39,7 @@ class TestHelp(unittest.TestCase):
 
 
 class TestExit(unittest.TestCase):
-    """Unittests pour tester la sortie de l'interpréteur de commandes HBNB."""
+    """Unittests pour tester la sortie de l'interpréteur."""
 
     def test_quit_exits(self):
         """test console"""
@@ -53,7 +53,7 @@ class TestExit(unittest.TestCase):
 
 
 class TestCreate(unittest.TestCase):
-    """Unittests pour tester la création de l'interpréteur de commandes HBNB."""
+    """Unittests pour tester la création de l'interpréteur."""
 
     @classmethod
     def setUp(self):
@@ -147,8 +147,11 @@ class TestCreate(unittest.TestCase):
         obj = BaseModel()
         obj.save()
         with patch("sys.stdout", new=StringIO()) as output:
-            self.assertFalse(HBNBCommand().onecmd("show BaseModel {}".format(obj.id)))
+            idx = obj.id
+            xmd = HBNBCommand().onecmd("show BaseModel {}".format(idx))
+            self.assertFalse(xmd)
             self.assertEqual(str(obj), output.getvalue().strip())
+
 
 if __name__ == '__main__':
     unittest.main()

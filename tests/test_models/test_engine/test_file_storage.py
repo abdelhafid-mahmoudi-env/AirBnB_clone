@@ -37,9 +37,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertTrue(os.path.exists(FileStorage._FileStorage__file_path))
 
     def test_all(self):
-        """Test de la fonction "all" de la classe de stockage pour s'assurer
-        que la représentation du dictionnaire de l'instance de classe est stockée
-        dans __objects"""
+        """Test de la fonction "all" de la classe de stockage."""
         objects = self.storage.all()
         key = self.base_model.__class__.__name__ + "." + self.base_model.id
         self.assertTrue(isinstance(objects, dict))
