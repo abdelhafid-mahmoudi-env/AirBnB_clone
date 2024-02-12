@@ -18,7 +18,7 @@ To use the console, clone this repository to your local machine:
 
 Your shell should work like this in interactive mode:
 
-```python
+```linux
 $ ./console.py
 (hbnb) help
 
@@ -34,7 +34,7 @@ $
 
 But also in non-interactive mode: (like the Shell project in C)
 
-```python
+```linux
 $ echo "help" | ./console.py
 (hbnb)
 
