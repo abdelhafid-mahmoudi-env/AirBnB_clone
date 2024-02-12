@@ -56,6 +56,18 @@ EOF  help  quit
 $
 ```
 
+## Tests
+
+All the files, classes, functions are tested with unit tests
+```linux
+python3 -m unittest discover tests
+```
+
+Unit tests also work in non-interactive mode:
+```linux
+echo "python3 -m unittest discover tests" | bash
+```
+
 ## Authors
 
 - Abdelhafid Mahmoudi <abdelhafid.mahmoudi.env@gmail.com>
