@@ -1,0 +1,33 @@
+.popover {
+    display: none;
+    position: absolute;
+    background-color: #FAFAFA;
+    width: 100%;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px;
+    padding: 10px;
+    list-style-type: none;
+    z-index: 1;
+}
+
+.filters:hover .popover {
+    display: block;
+}
+
+.locations,
+.amenities {
+    position: relative;
+}
+
+.locations ul {
+    width: 100%;
+}
+
+.locations h2 {
+    font-size: 16px;
+}
+
+.locations ul ul {
+    margin-top: 10px;
+}
+
