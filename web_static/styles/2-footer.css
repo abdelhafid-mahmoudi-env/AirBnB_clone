@@ -4,11 +4,10 @@ footer {
     width: 100%;
     position: fixed;
     bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-
-footer h2 {
+footer span {
     color: white;
-    text-align: center;
-    line-height: 60px;
-    margin: 0;
 }

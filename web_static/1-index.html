@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Header and Footer</title>
+    <title>Static Page</title>
     <style>
         body {
             margin: 0;
@@ -14,39 +14,25 @@
             height: 70px;
             width: 100%;
         }
-        header h1 {
-            color: white;
-            text-align: center;
-            line-height: 70px;
-            margin: 0;
-        }
-        main {
-            min-height: calc(100vh - 130px);
-        }
         footer {
             background-color: #00FF00;
             height: 60px;
             width: 100%;
             position: fixed;
             bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        footer h2 {
+        footer span {
             color: white;
-            text-align: center;
-            line-height: 60px;
-            margin: 0;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Header</h1>
-    </header>
-    <main>
-        <!-- Content goes here -->
-    </main>
+    <header></header>
     <footer>
-        <h2>Footer</h2>
+        <span>Best School</span>
     </footer>
 </body>
 </html>
